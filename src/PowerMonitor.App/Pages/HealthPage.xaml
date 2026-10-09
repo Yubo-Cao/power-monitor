@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="PowerMonitor.App.Pages.HealthPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="using:PowerMonitor.App.Controls">
+    <ScrollViewer>
+        <StackPanel Padding="32,16,32,32" Spacing="16" MaxWidth="1400">
+            <TextBlock Text="电池健康" Style="{StaticResource TitleTextBlockStyle}" />
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition /><ColumnDefinition /><ColumnDefinition /><ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="健康度" Style="{StaticResource TileLabel}" />
+                        <TextBlock x:Name="HealthValue" Text="—" Style="{StaticResource TileValue}" />
+                        <TextBlock Text="满充容量 ÷ 设计容量" Style="{StaticResource TileNote}" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="满充容量" Style="{StaticResource TileLabel}" />
+                        <TextBlock x:Name="FullValue" Text="—" Style="{StaticResource TileValue}" />
+                        <TextBlock x:Name="FullNote" Style="{StaticResource TileNote}" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="设计容量" Style="{StaticResource TileLabel}" />
+                        <TextBlock x:Name="DesignValue" Text="—" Style="{StaticResource TileValue}" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="3" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="循环次数" Style="{StaticResource TileLabel}" />
+                        <TextBlock x:Name="CycleValue" Text="—" Style="{StaticResource TileValue}" />
+                        <TextBlock x:Name="CycleNote" Style="{StaticResource TileNote}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Border Style="{StaticResource CardStyle}">
+                <Grid RowSpacing="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="280" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="满充容量变化" Style="{StaticResource SubtitleTextBlockStyle}" />
+                    <c:TimeChart x:Name="CapacityChart" Grid.Row="1" Stacked="False" Unit="Wh" ValueFormat="0.0" GapSeconds="1e12" TimeFormat="M/d" />
+                    <TextBlock Grid.Row="2" Style="{StaticResource TileNote}"
+                               Text="满充容量是电池管理芯片的估计值，会随校准上下浮动；看长期趋势。每天取一个值。Windows 自带的详细报告：powercfg /batteryreport" />
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

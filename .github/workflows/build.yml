@@ -1,0 +1,25 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet build PowerMonitor.sln -c Release
+      - name: Publish
+        shell: pwsh
+        run: |
+          foreach ($p in 'PowerMonitor.Collector', 'PowerMonitor.App') {
+            dotnet publish "src/$p" -c Release -r win-x64 --self-contained -o publish
+          }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PowerMonitor-win-x64
+          path: publish

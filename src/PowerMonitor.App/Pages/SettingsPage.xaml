@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="PowerMonitor.App.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel Padding="32,16,32,32" Spacing="16" MaxWidth="900" HorizontalAlignment="Left">
+            <TextBlock Text="设置" Style="{StaticResource TitleTextBlockStyle}" />
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel Spacing="12">
+                    <Grid>
+                        <StackPanel>
+                            <TextBlock Text="通知区域图标" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            <TextBlock Text="由后台采集器显示：悬停看功耗、剩余时间和电量，单击打开本窗口。" Style="{StaticResource TileNote}" />
+                        </StackPanel>
+                        <ToggleSwitch x:Name="TrayToggle" HorizontalAlignment="Right" OnContent="" OffContent="" MinWidth="0"
+                                      Toggled="TrayToggle_Toggled" />
+                    </Grid>
+                    <RadioButtons x:Name="TrayDisplay" Header="图标上显示" SelectionChanged="TrayDisplay_SelectionChanged">
+                        <RadioButton Content="当前功耗（W，插电时显示电量）" Tag="Watts" />
+                        <RadioButton Content="电量（%）" Tag="Percent" />
+                        <RadioButton Content="只显示电池图标" Tag="Icon" />
+                    </RadioButtons>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="后台采集器" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Name="CollectorInfo" Style="{StaticResource TileNote}" />
+                    <TextBlock x:Name="DataInfo" Style="{StaticResource TileNote}" IsTextSelectionEnabled="True" />
+                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,6,0,0">
+                        <Button Content="打开数据文件夹" Click="OpenData_Click" />
+                        <Button Content="生成 Windows 电池报告" Click="BatteryReport_Click" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="数据怎么来的" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock Style="{StaticResource TileNote}" Text="整机功耗：电池放电速率（只在用电池时有）。CPU / 核显：Intel RAPL 能量计数器。独显：只读设备电源状态，不唤醒它；醒着时的功耗按整机多出的部分估算。每个应用：CPU 能耗按 CPU 周期分摊，GPU 能耗按 GPU 引擎时间分摊。采集器每 10 秒（插电 30 秒）记一次，本身约占 0.5% 个 CPU 核。" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

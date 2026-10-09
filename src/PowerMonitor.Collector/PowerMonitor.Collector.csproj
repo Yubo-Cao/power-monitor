@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- WinExe: no console window when started at logon. -->
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>x64</Platforms>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <AssemblyName>PowerMonitorCollector</AssemblyName>
+    <RootNamespace>PowerMonitor.Collector</RootNamespace>
+    <!-- Notification-area icon only (NotifyIcon); no windows. -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>..\PowerMonitor.App\Assets\PowerMonitor.ico</ApplicationIcon>
+    <SelfContained>false</SelfContained>
+    <ServerGarbageCollector>false</ServerGarbageCollector>
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <TieredPGO>true</TieredPGO>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PowerMonitor.Core\PowerMonitor.Core.csproj" />
+  </ItemGroup>
+
+</Project>

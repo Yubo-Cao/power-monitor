@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="PowerMonitor.App.Pages.OverviewPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="using:PowerMonitor.App.Controls">
+    <ScrollViewer>
+        <StackPanel Padding="32,16,32,32" Spacing="16" MaxWidth="1400">
+            <TextBlock Text="概览" Style="{StaticResource TitleTextBlockStyle}" />
+
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition /><ColumnDefinition /><ColumnDefinition /><ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock x:Name="DrawLabel" Text="当前功耗" Style="{StaticResource TileLabel}" />
+                        <TextBlock x:Name="DrawValue" Text="—" Style="{StaticResource TileValue}" />
+                        <TextBlock x:Name="DrawNote" Style="{StaticResource TileNote}" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock x:Name="RemainLabel" Text="预计剩余" Style="{StaticResource TileLabel}" />
+                        <TextBlock x:Name="RemainValue" Text="—" Style="{StaticResource TileValue}" />
+                        <TextBlock x:Name="RemainNote" Style="{StaticResource TileNote}" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="电量" Style="{StaticResource TileLabel}" />
+                        <TextBlock x:Name="ChargeValue" Text="—" Style="{StaticResource TileValue}" />
+                        <ProgressBar x:Name="ChargeBar" Maximum="100" Margin="0,8,0,0" />
+                        <TextBlock x:Name="ChargeNote" Style="{StaticResource TileNote}" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="3" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="充满一次可用" Style="{StaticResource TileLabel}" />
+                        <TextBlock x:Name="FullValue" Text="—" Style="{StaticResource TileValue}" />
+                        <TextBlock x:Name="FullNote" Style="{StaticResource TileNote}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Border Style="{StaticResource CardStyle}">
+                <Grid RowSpacing="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="320" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <TextBlock Text="功耗构成" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
+                        <SelectorBar x:Name="Range" HorizontalAlignment="Right" SelectionChanged="Range_SelectionChanged">
+                            <SelectorBarItem Text="15 分钟" Tag="0.25" />
+                            <SelectorBarItem Text="1 小时" Tag="1" IsSelected="True" />
+                            <SelectorBarItem Text="6 小时" Tag="6" />
+                            <SelectorBarItem Text="24 小时" Tag="24" />
+                        </SelectorBar>
+                    </Grid>
+                    <c:TimeChart x:Name="PowerChart" Grid.Row="1" />
+                    <TextBlock Grid.Row="2" Style="{StaticResource TileNote}"
+                               Text="CPU 和核显来自 Intel RAPL 实测；独显按它醒着时整机功耗多出的部分估算；屏幕与其他 = 整机 − CPU 封装 − 独显。插电时整机功耗测不到，只显示 CPU 和核显。" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel Spacing="8">
+                    <TextBlock x:Name="AppsTitle" Text="耗电最多的应用" Style="{StaticResource SubtitleTextBlockStyle}" />
+                    <c:AppEnergyList x:Name="AppList" />
+                    <TextBlock Style="{StaticResource TileNote}"
+                               Text="CPU 能耗按每个进程用掉的 CPU 周期分摊，GPU 能耗按 GPU 引擎占用时间分摊；同名进程合并（如 chrome 的所有进程）。屏幕等不属于任何应用的功耗不计入。" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

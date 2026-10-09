@@ -1,0 +1,69 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerMonitor.Core", "src\PowerMonitor.Core\PowerMonitor.Core.csproj", "{8D2A0444-BC9E-43B3-A0AE-34392EAE421C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerMonitor.Collector", "src\PowerMonitor.Collector\PowerMonitor.Collector.csproj", "{4950BEDC-B918-4AEA-891B-31C0977FFBA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerMonitor.App", "src\PowerMonitor.App\PowerMonitor.App.csproj", "{7E52950E-B84B-4C24-AABD-37E3AE284E00}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8D2A0444-BC9E-43B3-A0AE-34392EAE421C}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{8D2A0444-BC9E-43B3-A0AE-34392EAE421C}.Debug|Any CPU.Build.0 = Debug|x64
+		{8D2A0444-BC9E-43B3-A0AE-34392EAE421C}.Debug|x64.ActiveCfg = Debug|x64
+		{8D2A0444-BC9E-43B3-A0AE-34392EAE421C}.Debug|x64.Build.0 = Debug|x64
+		{8D2A0444-BC9E-43B3-A0AE-34392EAE421C}.Debug|x86.ActiveCfg = Debug|x64
+		{8D2A0444-BC9E-43B3-A0AE-34392EAE421C}.Debug|x86.Build.0 = Debug|x64
+		{8D2A0444-BC9E-43B3-A0AE-34392EAE421C}.Release|Any CPU.ActiveCfg = Release|x64
+		{8D2A0444-BC9E-43B3-A0AE-34392EAE421C}.Release|Any CPU.Build.0 = Release|x64
+		{8D2A0444-BC9E-43B3-A0AE-34392EAE421C}.Release|x64.ActiveCfg = Release|x64
+		{8D2A0444-BC9E-43B3-A0AE-34392EAE421C}.Release|x64.Build.0 = Release|x64
+		{8D2A0444-BC9E-43B3-A0AE-34392EAE421C}.Release|x86.ActiveCfg = Release|x64
+		{8D2A0444-BC9E-43B3-A0AE-34392EAE421C}.Release|x86.Build.0 = Release|x64
+		{4950BEDC-B918-4AEA-891B-31C0977FFBA4}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{4950BEDC-B918-4AEA-891B-31C0977FFBA4}.Debug|Any CPU.Build.0 = Debug|x64
+		{4950BEDC-B918-4AEA-891B-31C0977FFBA4}.Debug|x64.ActiveCfg = Debug|x64
+		{4950BEDC-B918-4AEA-891B-31C0977FFBA4}.Debug|x64.Build.0 = Debug|x64
+		{4950BEDC-B918-4AEA-891B-31C0977FFBA4}.Debug|x86.ActiveCfg = Debug|x64
+		{4950BEDC-B918-4AEA-891B-31C0977FFBA4}.Debug|x86.Build.0 = Debug|x64
+		{4950BEDC-B918-4AEA-891B-31C0977FFBA4}.Release|Any CPU.ActiveCfg = Release|x64
+		{4950BEDC-B918-4AEA-891B-31C0977FFBA4}.Release|Any CPU.Build.0 = Release|x64
+		{4950BEDC-B918-4AEA-891B-31C0977FFBA4}.Release|x64.ActiveCfg = Release|x64
+		{4950BEDC-B918-4AEA-891B-31C0977FFBA4}.Release|x64.Build.0 = Release|x64
+		{4950BEDC-B918-4AEA-891B-31C0977FFBA4}.Release|x86.ActiveCfg = Release|x64
+		{4950BEDC-B918-4AEA-891B-31C0977FFBA4}.Release|x86.Build.0 = Release|x64
+		{7E52950E-B84B-4C24-AABD-37E3AE284E00}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{7E52950E-B84B-4C24-AABD-37E3AE284E00}.Debug|Any CPU.Build.0 = Debug|x64
+		{7E52950E-B84B-4C24-AABD-37E3AE284E00}.Debug|x64.ActiveCfg = Debug|x64
+		{7E52950E-B84B-4C24-AABD-37E3AE284E00}.Debug|x64.Build.0 = Debug|x64
+		{7E52950E-B84B-4C24-AABD-37E3AE284E00}.Debug|x86.ActiveCfg = Debug|x64
+		{7E52950E-B84B-4C24-AABD-37E3AE284E00}.Debug|x86.Build.0 = Debug|x64
+		{7E52950E-B84B-4C24-AABD-37E3AE284E00}.Release|Any CPU.ActiveCfg = Release|x64
+		{7E52950E-B84B-4C24-AABD-37E3AE284E00}.Release|Any CPU.Build.0 = Release|x64
+		{7E52950E-B84B-4C24-AABD-37E3AE284E00}.Release|x64.ActiveCfg = Release|x64
+		{7E52950E-B84B-4C24-AABD-37E3AE284E00}.Release|x64.Build.0 = Release|x64
+		{7E52950E-B84B-4C24-AABD-37E3AE284E00}.Release|x86.ActiveCfg = Release|x64
+		{7E52950E-B84B-4C24-AABD-37E3AE284E00}.Release|x86.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8D2A0444-BC9E-43B3-A0AE-34392EAE421C} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{4950BEDC-B918-4AEA-891B-31C0977FFBA4} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{7E52950E-B84B-4C24-AABD-37E3AE284E00} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+	EndGlobalSection
+EndGlobal

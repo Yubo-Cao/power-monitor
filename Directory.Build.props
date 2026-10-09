@@ -1,0 +1,7 @@
+<Project>
+  <!-- x64 only; solution and single-project builds share one output folder. -->
+  <PropertyGroup>
+    <Platform Condition="'$(Platform)' == '' or '$(Platform)' == 'AnyCPU'">x64</Platform>
+    <AppendPlatformToOutputPath>false</AppendPlatformToOutputPath>
+  </PropertyGroup>
+</Project>
