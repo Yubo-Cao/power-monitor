@@ -49,7 +49,7 @@
                 <StackPanel Spacing="8">
                     <c:AppEnergyList x:Name="AppList" />
                     <TextBlock Style="{StaticResource TileNote}"
-                               Text="CPU 能耗 = CPU 封装功耗（不含核显）按进程的 CPU 周期分摊；核显 / 独显能耗按进程在该 GPU 上的引擎时间分摊。悬停在一行上可看拆分。" />
+                               Text="CPU 能耗 = CPU 封装功耗（不含核显）按进程的 CPU 时间分摊；核显 / 独显能耗按进程在该 GPU 上的引擎时间分摊。悬停在一行上可看拆分。" />
                 </StackPanel>
             </Border>
         </StackPanel>

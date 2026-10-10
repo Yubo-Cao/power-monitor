@@ -24,13 +24,21 @@ $staging = Join-Path ([IO.Path]::GetTempPath()) "power-monitor-publish-$PID"
 $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
 $env:DOTNET_NOLOGO = '1'
 try {
-    # Both projects share the self-contained .NET runtime in one folder; the app goes
-    # last so its copies of shared files win.
-    foreach ($project in 'PowerMonitor.Collector', 'PowerMonitor.App') {
-        & $dotnet publish (Join-Path $PSScriptRoot "src\$project") -c Release -r win-x64 --self-contained `
-            -p:PublishReadyToRun=true -o $staging --nologo -v quiet
-        if ($LASTEXITCODE) { throw "dotnet publish $project failed ($LASTEXITCODE)" }
+    # The collector is NativeAOT (one native exe, ~6 MB working set). That needs the
+    # MSVC linker (VS "Desktop development with C++"), found through vswhere; without
+    # it, fall back to a JIT build (same behaviour, ~25 MB more memory).
+    $env:PATH = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer;$env:PATH"
+    $collectorProject = Join-Path $PSScriptRoot 'src\PowerMonitor.Collector'
+    & $dotnet publish $collectorProject -c Release -r win-x64 -p:DebugType=none -o $staging --nologo -v quiet
+    if ($LASTEXITCODE) {
+        Write-Warning 'NativeAOT publish failed (no MSVC toolchain?); installing a JIT collector instead.'
+        & $dotnet publish $collectorProject -c Release -r win-x64 --self-contained -p:PublishAot=false `
+            -p:PublishReadyToRun=true -p:DebugType=none -o $staging --nologo -v quiet
+        if ($LASTEXITCODE) { throw "dotnet publish PowerMonitor.Collector failed ($LASTEXITCODE)" }
     }
+    & $dotnet publish (Join-Path $PSScriptRoot 'src\PowerMonitor.App') -c Release -r win-x64 --self-contained `
+        -p:PublishReadyToRun=true -p:DebugType=none -o $staging --nologo -v quiet
+    if ($LASTEXITCODE) { throw "dotnet publish PowerMonitor.App failed ($LASTEXITCODE)" }
 
     # Stop only our own processes, matched by their installed path.
     if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {

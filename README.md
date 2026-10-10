@@ -38,10 +38,10 @@ Tray icon with the live draw in watts (hover for time left and charge):
 | Whole-laptop draw | Battery discharge rate (`IOCTL_BATTERY_QUERY_STATUS`); only known on battery |
 | CPU package, cores, iGPU | Intel RAPL through the Windows `Energy Meter` performance counters |
 | dGPU | Its PnP device power state (D0/D3) only. While awake, its draw is estimated as the platform power above its level while the dGPU sleeps |
-| Per-process CPU | CPU cycles per process from one `NtQuerySystemInformation` snapshot |
+| Per-process CPU | CPU time per process: `GetProcessTimes` on handles kept open, plus one `NtQuerySystemInformation` snapshot a minute for new and protected processes |
 | Per-process GPU | `GPU Engine` running time per process and adapter |
 
-Per-app energy: CPU energy (package minus iGPU) is split by CPU cycles, iGPU energy
+Per-app energy: CPU energy (package minus iGPU) is split by CPU time, iGPU energy
 by GPU engine time on the iGPU, the dGPU estimate by engine time on the dGPU.
 Display and the rest of the platform are not attributed to apps. Treat app numbers
 as a good ranking, not a meter reading.
@@ -52,7 +52,11 @@ Design rules the collector keeps:
   `nvidia-smi`, which would bring a sleeping dGPU to D0 and cost 10-15 W.
 - **No WMI in the sampling loop.** A WMI query per sample costs more CPU (in
   `WmiPrvSE`) than everything else; battery, RAPL, processes and GPU all use native APIs.
-- **Cheap**: about 0.5-0.7 % of one core and ~55 MB, every 10 s on battery and 30 s on AC.
+- **Cheap**: the collector is NativeAOT with a plain Win32 tray icon: about 0.1 % of one core
+  and a ~6 MB working set, sampling every 10 s on battery and 30 s on AC. Snapshotting all
+  processes copies every thread (~75 M cycles with 800 processes), so it runs every 2 minutes;
+  every 30 s, cached process handles give CPU times for ~10 M cycles, and the power readings
+  in between cost ~2 M cycles.
 
 ## Requirements
 
@@ -60,8 +64,9 @@ Design rules the collector keeps:
 - CPU and iGPU numbers need the `Energy Meter` counters (Intel RAPL; check with
   `Get-Counter -ListSet 'Energy Meter'`). Without them the app still shows battery
   draw, sessions, health and per-app CPU time.
-- Building: .NET 10 SDK (`winget install Microsoft.DotNet.SDK.10`) or Visual Studio 2026
-  with the WinUI workload.
+- Building: .NET 10 SDK (`winget install Microsoft.DotNet.SDK.10`). The NativeAOT collector
+  also needs the MSVC linker (Visual Studio or Build Tools with "Desktop development with C++");
+  without it the installer falls back to a JIT collector (~30 MB instead of ~6 MB).
 
 ## Install
 
@@ -84,11 +89,12 @@ samples are kept for a year, per-minute app energy for 120 days.
 
 ```
 src/PowerMonitor.Core       readers (battery, RAPL/PDH, processes, GPU), sampler, SQLite store, settings
-src/PowerMonitor.Collector  background sampler + tray icon (WinForms NotifyIcon, no windows)
+src/PowerMonitor.Collector  background sampler + tray icon (NativeAOT, Win32 Shell_NotifyIcon)
 src/PowerMonitor.App        WinUI 3 app, unpackaged; charts are drawn with XAML shapes
 ```
 
-`PowerMonitorCollector.exe --probe 3` prints three samples as JSON without touching the store.
+`PowerMonitorCollector.exe --probe 3` prints three samples without touching the store;
+`--bench 10` prints the CPU cycles and memory of each sample.
 `POWERMONITOR_DB=<path>` points both programs at another database for testing.
 
 ## License

@@ -17,11 +17,9 @@ public sealed record Settings
 
     public static string FilePath => Path.Combine(Path.GetDirectoryName(Store.DefaultPath)!, "settings.json");
 
-    static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
-
     public static Settings Load()
     {
-        try { return JsonSerializer.Deserialize<Settings>(File.ReadAllText(FilePath), Options) ?? new(); }
+        try { return JsonSerializer.Deserialize(File.ReadAllText(FilePath), SettingsJson.Default.Settings) ?? new(); }
         catch { return new(); }
     }
 
@@ -29,7 +27,12 @@ public sealed record Settings
     {
         Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
         var tmp = FilePath + ".tmp";
-        File.WriteAllText(tmp, JsonSerializer.Serialize(this, Options));
+        File.WriteAllText(tmp, JsonSerializer.Serialize(this, SettingsJson.Default.Settings));
         File.Move(tmp, FilePath, overwrite: true);
     }
 }
+
+/// <summary>Source-generated (the collector is NativeAOT: no reflection-based JSON).</summary>
+[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(Settings))]
+partial class SettingsJson : JsonSerializerContext;

@@ -70,7 +70,7 @@
                     <TextBlock x:Name="AppsTitle" Text="耗电最多的应用" Style="{StaticResource SubtitleTextBlockStyle}" />
                     <c:AppEnergyList x:Name="AppList" />
                     <TextBlock Style="{StaticResource TileNote}"
-                               Text="CPU 能耗按每个进程用掉的 CPU 周期分摊，GPU 能耗按 GPU 引擎占用时间分摊；同名进程合并（如 chrome 的所有进程）。屏幕等不属于任何应用的功耗不计入。" />
+                               Text="CPU 能耗按每个进程用掉的 CPU 时间分摊，GPU 能耗按 GPU 引擎占用时间分摊；同名进程合并（如 chrome 的所有进程）。屏幕等不属于任何应用的功耗不计入。" />
                 </StackPanel>
             </Border>
         </StackPanel>

@@ -46,7 +46,8 @@ public sealed class Store : IDisposable
             Pooling = false,
         }.ToString());
         _db.Open();
-        Exec("PRAGMA busy_timeout = 5000;");
+        // A small page cache: the collector appends and the app reads short ranges.
+        Exec("PRAGMA busy_timeout = 5000; PRAGMA cache_size = -512;");
         if (!readOnly) Migrate();
     }
 
