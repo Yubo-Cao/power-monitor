@@ -26,6 +26,17 @@
             </Border>
 
             <Border Style="{StaticResource CardStyle}">
+                <Grid>
+                    <StackPanel>
+                        <TextBlock Text="用电池时的提醒" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        <TextBlock Text="独显醒着超过 3 分钟、或 5 分钟平均功耗达到 30 W 时，从通知区域图标发一条通知，写出是哪些应用。同一种提醒 30 分钟内最多一次；插电时不提醒。" Style="{StaticResource TileNote}" TextWrapping="Wrap" Margin="0,0,72,0" />
+                    </StackPanel>
+                    <ToggleSwitch x:Name="AlertsToggle" HorizontalAlignment="Right" OnContent="" OffContent="" MinWidth="0"
+                                  Toggled="AlertsToggle_Toggled" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
                 <StackPanel Spacing="6">
                     <TextBlock Text="后台采集器" Style="{StaticResource BodyStrongTextBlockStyle}" />
                     <TextBlock x:Name="CollectorInfo" Style="{StaticResource TileNote}" />

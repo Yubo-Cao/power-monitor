@@ -4,6 +4,7 @@
 //   PowerMonitorCollector            run (single instance)
 //   PowerMonitorCollector --probe N  print N samples to stdout and exit (no store)
 //   PowerMonitorCollector --bench N  N samples 10 s apart with their CPU cost (temp store)
+//   PowerMonitorCollector --test-alert  show a sample notification from a second tray icon
 using System.Runtime.InteropServices;
 using PowerMonitor.Collector;
 using PowerMonitor.Core;
@@ -56,6 +57,16 @@ if (args is ["--probe", var n, ..])
     return 0;
 }
 
+if (args is ["--test-alert", ..])
+{
+    SetProcessDpiAwarenessContext(-4);
+    using var test = new Tray(() => null, Console.WriteLine);
+    test.ShowAlert("用电池时独显醒着", "测试通知：大约多耗 10-15 W。在用它的应用：example.exe");
+    test.FlushAlerts();
+    Thread.Sleep(10_000);
+    return 0;
+}
+
 using var mutex = new Mutex(true, @"Local\PowerMonitorCollector", out bool first);
 if (!first) return 0;
 
@@ -77,6 +88,7 @@ var sampling = new Thread(() =>
 
         using var sampler = new Sampler();
         Log("adapters: " + string.Join("; ", sampler.Adapters.Select(a => $"{a.Name} {a.Luid} discrete={a.Discrete}")));
+        var alerts = new Alerts();
         var lastPrune = DateTime.MinValue;
         bool onAc = true;
         int count = 0;
@@ -90,6 +102,12 @@ var sampling = new Thread(() =>
                 store.Write(s);
                 Volatile.Write(ref latest, s);
                 tray.NotifySample();
+                if (alerts.Check(s, sampler.DGpuUsers) is { } alert)
+                {
+                    bool show = Settings.Load().Alerts;
+                    Log($"alert{(show ? "" : " (off in settings)")}: {alert.Title} | {alert.Body}");
+                    if (show) tray.ShowAlert(alert.Title, alert.Body);
+                }
                 if (DateTime.UtcNow - lastPrune > TimeSpan.FromDays(1)) { store.Prune(); lastPrune = DateTime.UtcNow; }
                 Trim(++count);
             }

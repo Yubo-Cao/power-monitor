@@ -19,6 +19,8 @@ public sealed partial class SettingsPage : Page
         TrayToggle.IsOn = s.TrayIcon;
         TrayDisplay.SelectedIndex = (int)s.TrayDisplay;
         TrayDisplay.IsEnabled = s.TrayIcon;
+        AlertsToggle.IsOn = s.Alerts;
+        AlertsToggle.IsEnabled = s.TrayIcon;
         _loading = false;
 
         var latest = Data.Latest();
@@ -40,8 +42,11 @@ public sealed partial class SettingsPage : Page
     void TrayToggle_Toggled(object sender, RoutedEventArgs e)
     {
         TrayDisplay.IsEnabled = TrayToggle.IsOn;
+        AlertsToggle.IsEnabled = TrayToggle.IsOn; // notifications come from the tray icon
         Save(s => s with { TrayIcon = TrayToggle.IsOn });
     }
+
+    void AlertsToggle_Toggled(object sender, RoutedEventArgs e) => Save(s => s with { Alerts = AlertsToggle.IsOn });
 
     void TrayDisplay_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {

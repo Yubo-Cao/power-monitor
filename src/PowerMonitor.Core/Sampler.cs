@@ -45,6 +45,9 @@ public sealed class Sampler : IDisposable
 
     public IReadOnlyList<GpuAdapter> Adapters => _gpu.Adapters;
 
+    /// <summary>Apps with engine time on the dGPU in the last per-process split (updated every <see cref="AttributeEvery"/>).</summary>
+    public IReadOnlyList<string> DGpuUsers { get; private set; } = [];
+
     public Sampler()
     {
         _raplEnergy = _raplQuery.Add(@"\Energy Meter(*)\Energy");
@@ -157,6 +160,8 @@ public sealed class Sampler : IDisposable
         }
         if (igpuTotal <= 0 && igpuJ > 0) Add("(iGPU idle)", 0, igpuJ, 0, 0, 0);
         if (dgpuTotal <= 0 && dgpuJ > 0) Add("(dGPU idle)", 0, 0, dgpuJ, 0, 0);
+        DGpuUsers = gpuSec.Where(k => k.Key.Luid == dLuid && k.Value > 0.01)
+            .Select(k => _processes.Names.GetValueOrDefault(k.Key.Pid) ?? $"pid {k.Key.Pid}").Distinct().ToList();
 
         return byName
             .Select(kv => new ProcessEnergy(kv.Key, kv.Value.cpuJ, kv.Value.igJ, kv.Value.dgJ, kv.Value.cpuS, kv.Value.gpuS))

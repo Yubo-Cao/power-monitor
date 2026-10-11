@@ -14,6 +14,8 @@ public sealed record Settings
     public bool TrayIcon { get; init; } = true;
     [JsonConverter(typeof(JsonStringEnumConverter<TrayDisplay>))]
     public TrayDisplay TrayDisplay { get; init; } = TrayDisplay.Watts;
+    /// <summary>Notifications on battery: dGPU awake for minutes, sustained high draw.</summary>
+    public bool Alerts { get; init; } = true;
 
     public static string FilePath => Path.Combine(Path.GetDirectoryName(Store.DefaultPath)!, "settings.json");
 

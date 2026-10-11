@@ -14,11 +14,12 @@ namespace PowerMonitor.Collector;
 /// </summary>
 sealed unsafe partial class Tray : IDisposable
 {
-    const uint WM_APP = 0x8000, WM_TRAY = WM_APP + 1, WM_SAMPLE = WM_APP + 2;
+    const uint WM_APP = 0x8000, WM_TRAY = WM_APP + 1, WM_SAMPLE = WM_APP + 2, WM_ALERT = WM_APP + 3;
     const uint WM_DESTROY = 0x0002, WM_SETTINGCHANGE = 0x001A, WM_CONTEXTMENU = 0x007B, WM_LBUTTONUP = 0x0202, WM_NULL = 0;
-    const uint NIN_SELECT = 0x0400, NIN_KEYSELECT = 0x0401;
+    const uint NIN_SELECT = 0x0400, NIN_KEYSELECT = 0x0401, NIN_BALLOONUSERCLICK = 0x0405;
     const uint NIM_ADD = 0, NIM_MODIFY = 1, NIM_DELETE = 2, NIM_SETVERSION = 4;
-    const uint NIF_MESSAGE = 1, NIF_ICON = 2, NIF_TIP = 4, NIF_SHOWTIP = 0x80;
+    const uint NIF_MESSAGE = 1, NIF_ICON = 2, NIF_TIP = 4, NIF_INFO = 0x10, NIF_SHOWTIP = 0x80;
+    const uint NIIF_NONE = 0, NIIF_RESPECT_QUIET_TIME = 0x80;
     const uint MF_STRING = 0, MF_CHECKED = 8, MF_SEPARATOR = 0x800;
     const uint TPM_RETURNCMD = 0x100, TPM_RIGHTBUTTON = 2, TPM_NONOTIFY = 0x80;
     const int CmdOpen = 1, CmdWatts = 2, CmdPercent = 3, CmdIcon = 4, CmdHide = 5;
@@ -73,6 +74,7 @@ sealed unsafe partial class Tray : IDisposable
     readonly Action<string> _log;
     readonly uint _taskbarCreated;
     readonly Queue<(long At, int Mw)> _drain = new(); // on-battery draw, last 5 min
+    readonly System.Collections.Concurrent.ConcurrentQueue<(string Title, string Body)> _alerts = new();
     Settings _settings = Settings.Load();
     DateTime _settingsStamp;
     string _shownKey = "";
@@ -108,6 +110,26 @@ sealed unsafe partial class Tray : IDisposable
     /// <summary>Called from the sampling thread.</summary>
     public void NotifySample() => PostMessage(Hwnd, WM_SAMPLE, IntPtr.Zero, IntPtr.Zero);
 
+    /// <summary>Called from the sampling thread: shown as a Windows notification from the tray icon.</summary>
+    public void ShowAlert(string title, string body)
+    {
+        _alerts.Enqueue((title, body));
+        PostMessage(Hwnd, WM_ALERT, IntPtr.Zero, IntPtr.Zero);
+    }
+
+    internal void FlushAlerts()
+    {
+        while (_alerts.TryDequeue(out var a))
+        {
+            if (!_added) { _log("alert not shown, the tray icon is hidden: " + a.Title); continue; }
+            var d = NewData(NIF_INFO);
+            d.dwInfoFlags = NIIF_NONE | NIIF_RESPECT_QUIET_TIME;
+            Copy(a.Title, d.szInfoTitle, 64);
+            Copy(a.Body, d.szInfo, 256);
+            if (!ShellNotifyIcon(NIM_MODIFY, ref d)) _log("alert failed: " + a.Title);
+        }
+    }
+
     public static void Run()
     {
         while (GetMessage(out var msg, IntPtr.Zero, 0, 0) > 0)
@@ -126,10 +148,11 @@ sealed unsafe partial class Tray : IDisposable
             try
             {
                 if (msg == WM_SAMPLE) { t.Apply(force: false); return IntPtr.Zero; }
+                if (msg == WM_ALERT) { t.FlushAlerts(); return IntPtr.Zero; }
                 if (msg == WM_TRAY)
                 {
                     uint ev = (uint)(l.ToInt64() & 0xFFFF);
-                    if (ev is WM_LBUTTONUP or NIN_SELECT or NIN_KEYSELECT) OpenApp();
+                    if (ev is WM_LBUTTONUP or NIN_SELECT or NIN_KEYSELECT or NIN_BALLOONUSERCLICK) OpenApp();
                     else if (ev == WM_CONTEXTMENU) t.ShowMenu((short)(w.ToInt64() & 0xFFFF), (short)((w.ToInt64() >> 16) & 0xFFFF));
                     return IntPtr.Zero;
                 }
@@ -250,10 +273,16 @@ sealed unsafe partial class Tray : IDisposable
     {
         var d = NewData(flags);
         d.hIcon = icon;
-        var span = new Span<char>(d.szTip, 128);
-        tip.AsSpan(0, Math.Min(tip.Length, 127)).CopyTo(span);
-        span[Math.Min(tip.Length, 127)] = '\0';
+        Copy(tip, d.szTip, 128);
         return ShellNotifyIcon(msg, ref d);
+    }
+
+    static void Copy(string text, char* dest, int capacity)
+    {
+        var span = new Span<char>(dest, capacity);
+        int n = Math.Min(text.Length, capacity - 1);
+        text.AsSpan(0, n).CopyTo(span);
+        span[n] = '\0';
     }
 
     void Remove()

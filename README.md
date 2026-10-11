@@ -28,6 +28,9 @@ Tray icon with the live draw in watts (hover for time left and charge):
 - **放电记录 Sessions**: every discharge from unplug to plug-in, with the charge used,
   the time in use, the average draw, and what a full charge would last at that rate.
 - **应用能耗 Apps**: energy per app over 1 h / 24 h / 7 d / 30 d, split into CPU, iGPU and dGPU.
+- **Alerts** (on battery only, at most every 30 min each, can be turned off in settings): a notification
+  when the dGPU stays awake for 3 minutes, naming the apps with engine time on it, and when the
+  draw averages 30 W or more over 5 minutes, naming the apps that used the most energy.
 - **电池健康 Health**: full-charge vs design capacity, cycle count, capacity over time.
 - **Tray**: live watts (or charge %) drawn into the icon; click to open the app.
 

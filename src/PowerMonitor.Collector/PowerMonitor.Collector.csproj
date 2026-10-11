@@ -11,6 +11,9 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <AssemblyName>PowerMonitorCollector</AssemblyName>
     <RootNamespace>PowerMonitor.Collector</RootNamespace>
+    <!-- FileDescription: the name Windows shows on the tray icon's notifications. -->
+    <AssemblyTitle>电源监控</AssemblyTitle>
+    <Product>电源监控</Product>
     <ApplicationIcon>..\PowerMonitor.App\Assets\PowerMonitor.ico</ApplicationIcon>
 
     <!-- Always running, so: NativeAOT (no JIT, small working set), workstation
